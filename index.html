@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#fbf8ee; --gingham:rgba(122,162,216,.34); --blue:#5b86c9; --butter:#f4d77a;
+    --paper:#fffdf6; --ink:#3b3a4a; --heart:#e0606f; --pill1:#a9c5ef; --pill2:#5b86c9;
+    --script:"Reenie Beanie","Caveat",cursive; --hand:"Caveat","Segoe Print",cursive;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;overflow:hidden;color:var(--ink);font-family:var(--hand)}
+  body{
+    background-color:var(--cream);
+    background-image:linear-gradient(90deg,var(--gingham) 50%,transparent 50%),linear-gradient(var(--gingham) 50%,transparent 50%);
+    background-size:56px 56px;
+  }
+  /* optional pink theme: CONFIG.theme = "pink" */
+  body.pink{--blue:#d7849f;--pill1:#ecbccd;--pill2:#cf7f9d;
+    background-image:repeating-linear-gradient(90deg,#fdf1f4 0 44px,#f6cfda 44px 88px);background-size:auto}
+  body.rose{--cream:#fff7f8;--gingham:rgba(236,140,168,.3);--blue:#d7849f;--pill1:#ecbccd;--pill2:#cf7f9d}
+  body.lavender{--cream:#faf6ff;--gingham:rgba(170,140,215,.3);--blue:#8e6fc4;--pill1:#cbb6ee;--pill2:#8e6fc4}
+  body.purple{--cream:#fbf7ff;--gingham:rgba(150,110,205,.3);--blue:#8a63c7;--pill1:#c9b0ee;--pill2:#8a63c7}
+  body.sage{--cream:#f7faf0;--gingham:rgba(130,175,130,.3);--blue:#5f9570;--pill1:#a9d1b2;--pill2:#5f9570}
+  body.butter{--cream:#fffbea;--gingham:rgba(240,190,70,.3);--blue:#d49a2a;--pill1:#f4d77a;--pill2:#d49a2a}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  button:focus-visible{outline:3px solid var(--blue);outline-offset:4px;border-radius:8px}
+
+  /* ============ bunting ============ */
+  #bunting{position:fixed;top:0;left:0;width:100%;height:clamp(64px,13vh,120px);z-index:6;pointer-events:none;
+    transform-origin:50% 0;animation:sway 7s ease-in-out infinite;transition:opacity 1s}
+  #bunting.hide{opacity:0}
+  @keyframes sway{50%{transform:rotate(.8deg)}}
+
+  /* ============ GATE: do you want a surprise? ============ */
+  #gate{position:fixed;inset:0;z-index:5;display:grid;place-items:center;text-align:center;padding:16vh 6vw 8vh;transition:opacity 1s}
+  #gate.out{opacity:0;pointer-events:none}
+  .gate-inner{max-width:580px}
+  .gate-inner>*{opacity:0;animation:rise .8s cubic-bezier(.2,1,.3,1) forwards}
+  .gate-inner>:nth-child(1){animation-delay:.2s}.gate-inner>:nth-child(2){animation-delay:.5s}
+  .gate-inner>:nth-child(3){animation-delay:.9s}.gate-inner>:nth-child(4){animation-delay:1.3s}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .fav{display:inline-flex;align-items:flex-start;gap:.3rem;font:600 1.8rem var(--hand);margin-bottom:.4rem;rotate:-5deg}
+  .fav svg{width:48px;height:48px;margin-top:.5rem}
+  .badge{display:block;width:max-content;max-width:100%;margin:0 auto 2rem;font:400 clamp(2.8rem,9vw,4.4rem)/1 var(--script);
+    background:#fff;padding:.3rem 1.4rem;rotate:2deg;box-shadow:0 6px 14px rgba(70,70,100,.22);position:relative}
+  .badge::before{content:"";position:absolute;top:-12px;left:50%;width:84px;height:24px;margin-left:-42px;rotate:-4deg;
+    background:rgba(244,215,122,.75);background-image:repeating-linear-gradient(90deg,transparent 0 8px,rgba(255,255,255,.35) 8px 10px)}
+  h2.ask{font:700 clamp(2.4rem,8.5vw,4.4rem)/1.02 var(--hand);color:var(--blue);text-transform:uppercase;
+    text-shadow:2px 2px 0 #fff,4px 4px 0 rgba(0,0,0,.06);margin-bottom:2.2rem}
+  .btns{display:flex;gap:1.8rem;justify-content:center;align-items:center;min-height:5rem}
+  .pill{font:700 italic 2.2rem var(--hand);color:#fff;text-decoration:underline;text-decoration-thickness:2px;
+    padding:.35rem 2.4rem;border-radius:999px;background:linear-gradient(var(--pill1),var(--pill2));
+    box-shadow:inset 0 3px 6px rgba(255,255,255,.55),0 8px 14px rgba(60,60,90,.25);text-shadow:1px 1px 3px rgba(0,0,0,.25)}
+  .yes{scale:var(--s,1);transition:scale .3s cubic-bezier(.3,1.6,.5,1);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:inset 0 3px 6px rgba(255,255,255,.55),0 8px 24px rgba(224,96,111,.55)}}
+  .no{background:linear-gradient(#d3d3da,#9a9aa8)}
+  .no.fly{position:fixed;z-index:8;transition:left .4s cubic-bezier(.3,1.5,.5,1),top .4s cubic-bezier(.3,1.5,.5,1)}
+  .nudge{margin-top:1.4rem;font:600 1.6rem var(--hand);min-height:2rem;opacity:.85}
+
+  /* ============ LOCK: quiz / puzzle / password ============ */
+  #lock{position:fixed;inset:0;z-index:5;display:grid;place-items:center;text-align:center;padding:16vh 6vw 8vh;opacity:0;pointer-events:none;transition:opacity .9s}
+  #lock.show{opacity:1;pointer-events:auto}
+  #lock.out{opacity:0;pointer-events:none}
+  .lock-inner{max-width:560px;width:100%}
+  .lock-inner>*{animation:rise .7s cubic-bezier(.2,1,.3,1) both}
+  .lock-inner>:nth-child(2){animation-delay:.1s}.lock-inner>:nth-child(3){animation-delay:.2s}.lock-inner>:nth-child(4){animation-delay:.3s}
+  .padlock{display:block;width:72px;margin:0 auto 1rem;color:var(--blue)}
+  .shackle{transition:transform .4s;transform-box:view-box;transform-origin:44px 28px}
+  .padlock.open .shackle{transform:translateY(-7px) rotate(-22deg)}
+  .lock-title{font:700 clamp(2.2rem,7vw,3.6rem)/1.05 var(--hand);color:var(--blue);text-transform:uppercase;text-shadow:2px 2px 0 #fff;margin-bottom:.6rem}
+  .lock-title.q{font-size:clamp(1.9rem,6vw,2.8rem);text-transform:none}
+  .lock-hint{font:600 1.5rem var(--hand);opacity:.8;margin-bottom:1.2rem}
+  .qcount{font:600 1.3rem var(--hand);opacity:.7;margin-bottom:.3rem}
+  .lock-input{font:600 2rem var(--hand);text-align:center;letter-spacing:.18em;padding:.45rem 1.4rem;width:min(100%,320px);
+    border-radius:999px;border:3px solid var(--blue);background:rgba(255,255,255,.92);color:var(--ink)}
+  .lock-input:focus-visible{outline:4px solid rgba(91,134,201,.3);outline-offset:2px}
+  .lock-msg{min-height:2rem;margin-top:1rem;font:600 1.6rem var(--hand)}
+  .shake{animation:shakex .45s}
+  @keyframes shakex{20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+  .opts{display:grid;gap:.9rem;margin-top:1.2rem}
+  .opt{font:600 1.7rem var(--hand);padding:.5rem 1.2rem;border-radius:999px;background:#fff;border:3px solid var(--pill2);color:var(--ink);transition:transform .2s,background .2s}
+  .opt:hover{transform:translateY(-2px) rotate(-.6deg)}
+  .opt.good{background:#cfeedd;border-color:#5f9570}
+  .opt.bad{background:#ffd3de;border-color:#d7849f;animation:shakex .45s}
+  .puz{width:min(78vw,340px);aspect-ratio:1/1;margin:1rem auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#fff;padding:8px;
+    box-shadow:0 10px 24px rgba(70,70,100,.25);rotate:-1.5deg}
+  .tile{background-size:300% 300%;background-repeat:no-repeat;border-radius:3px;font:700 1.6rem var(--hand);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5);transition:filter .2s}
+  .tile:hover{filter:brightness(1.1)}
+  .puz:not(.img) .tile{background-image:linear-gradient(135deg,#cfe0f7,#fbe7a9)!important;color:#5a5a70;text-shadow:none}
+  .puz.img .tile{font-size:0}
+  .tile.blank{visibility:hidden}
+  .puz.solved .tile.blank{visibility:visible}
+
+  /* ============ HOME: the envelope ============ */
+  #home{position:fixed;inset:0;display:grid;place-items:center;z-index:3;opacity:0;pointer-events:none;transition:opacity 1.1s ease}
+  #home.show{opacity:1;pointer-events:auto}
+  #home.out{opacity:0;pointer-events:none}
+  #home:not(.show) *{animation-play-state:paused!important}
+  .cluster{display:flex;align-items:center;justify-content:center;gap:clamp(.2rem,1.5vw,1.4rem);padding:0 4vw}
+  .item{opacity:0;transform:translateY(-90px) rotate(-8deg) scale(.9);animation:drop .9s cubic-bezier(.2,1.45,.4,1) forwards}
+  .item.cam{animation-delay:.3s}.item.env{animation-delay:.65s}.item.bq{animation-delay:1s}
+  @keyframes drop{to{opacity:1;transform:none}}
+  .cam{width:clamp(110px,22vw,230px);z-index:1;margin-top:6vh}
+  .cam svg,.bq svg{width:100%;display:block;filter:drop-shadow(0 8px 10px rgba(60,70,100,.22))}
+  .cam .bob,.bq .bob{animation:bob 4.2s ease-in-out 1.7s infinite}
+  .bq .bob{animation-duration:5s;animation-delay:2.2s}
+  @keyframes bob{50%{transform:translateY(-8px) rotate(1.2deg)}}
+  .cam.click svg{animation:shake .5s}
+  @keyframes shake{25%{transform:rotate(-4deg) scale(1.06)}60%{transform:rotate(3deg) scale(1.04)}}
+  .bq{width:clamp(100px,21vw,210px);z-index:1;margin-top:3vh}
+
+  .env{position:relative;z-index:3;font-size:clamp(10px,2.3vw,17px);width:20em;height:13em;margin-top:9em}
+  .envelope{position:relative;width:100%;height:100%;display:block;transition:transform .4s}
+  .envelope:hover{transform:scale(1.03) rotate(-.6deg)}
+  .env-shadow{position:absolute;left:8%;right:8%;bottom:-1.4em;height:1.6em;border-radius:50%;background:rgba(70,80,110,.22);filter:blur(8px)}
+  .env-back{position:absolute;inset:0;background:#e7d8b4;border-radius:.4em;z-index:1}
+  .env-back::before{content:"";position:absolute;left:0;right:0;top:-6.2em;height:6.4em;background:#efe2c0;clip-path:polygon(50% 0,0 100%,100% 100%)}
+  .card{position:absolute;z-index:2;left:2em;bottom:1.6em;width:16em;height:11em;border-radius:.3em;
+    background:radial-gradient(circle at 30% 20%,#fff,var(--paper) 60%,#f6efdc);box-shadow:0 2px 8px rgba(80,70,50,.18);
+    display:grid;place-items:center;text-align:center;transform:translateY(-5.4em) rotate(-2deg);
+    transition:transform 1.2s cubic-bezier(.3,.9,.3,1);animation:breathe 3.6s ease-in-out 1.8s infinite}
+  .card span{font-family:var(--script);font-size:3.4em;line-height:.85;color:#3a3846}
+  @keyframes breathe{50%{transform:translateY(-6em) rotate(-1deg)}}
+  .env-front{position:absolute;inset:0;z-index:3;background:#f1e6c8;border-radius:.4em;clip-path:polygon(0 36%,50% 66%,100% 36%,100% 100%,0 100%)}
+  .env-front::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.5),transparent 55%)}
+  .heart{position:absolute;z-index:4;width:1.6em;color:var(--heart)}
+  .heart.h1{right:2.2em;bottom:2.2em;transform:rotate(12deg)}
+  .heart.h2{right:4em;bottom:1.3em;width:1.1em;transform:rotate(-14deg)}
+  #home.opening .card{animation:none;transform:translateY(-15em) scale(1.32) rotate(0deg);z-index:6}
+  #home.opening .env-shadow{opacity:.4}
+  .hint{position:absolute;left:50%;bottom:-3.9em;translate:-50% 0;font-size:1.9em;white-space:nowrap;display:flex;align-items:flex-end;gap:.15em;
+    opacity:0;animation:fadein .8s 1.9s forwards,wiggle 1.8s ease-in-out 2.7s infinite}
+  .hint svg{width:1.6em;height:1.1em;margin-bottom:.35em}
+  @keyframes fadein{to{opacity:1}}
+  @keyframes wiggle{50%{translate:-50% -5px;rotate:-2deg}}
+  #home.opening .hint{display:none}
+  #flash{position:fixed;inset:0;background:#fff;opacity:0;z-index:20;pointer-events:none}
+  #flash.pop{animation:flash .7s ease-out}
+  @keyframes flash{0%{opacity:0}18%{opacity:.95}100%{opacity:0}}
+
+  /* ============ BOOK ============ */
+  #ambient{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 2s;overflow:hidden}
+  #ambient.on{opacity:1}
+  .float{position:absolute;bottom:-40px;opacity:0;animation:floatup linear infinite}
+  @keyframes floatup{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.5}90%{opacity:.4}
+    100%{transform:translateY(-110vh) translateX(var(--dx)) rotate(40deg);opacity:0}}
+  #book{position:fixed;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;opacity:0;pointer-events:none;transition:opacity 1.2s ease;scroll-behavior:smooth}
+  #book.on{opacity:1;pointer-events:auto}
+  .inner{max-width:980px;margin:0 auto;padding:12vh 6vw 14vh}
+  .book-title{font:400 clamp(3.2rem,11vw,6.5rem)/.9 var(--script);text-align:center;margin-bottom:9vh}
+  .book-title small{display:block;font:600 1.5rem var(--hand);opacity:.7;margin-bottom:.4rem}
+
+  /* film strip */
+  .film-wrap{position:relative;width:100vw;left:50%;margin:0 0 14vh -50vw;rotate:-1.2deg}
+  .film{position:relative;background:#141414;padding:30px 0;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.28)}
+  .film::before,.film::after{content:"";position:absolute;left:0;right:0;height:12px;
+    background:repeating-linear-gradient(90deg,transparent 0 10px,#efeae0 10px 24px,transparent 24px 34px)}
+  .film::before{top:9px}.film::after{bottom:9px}
+  .track{display:flex;width:max-content;animation:filmscroll 38s linear infinite}
+  .film:hover .track{animation-play-state:paused}
+  @keyframes filmscroll{to{transform:translateX(-50%)}}
+  .frame{flex:none;width:160px;height:118px;margin-right:10px;background:linear-gradient(135deg,#2c2c34,#1b1b20);overflow:hidden}
+  .frame img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.25) contrast(1.05)}
+  .frame:empty::after{content:"photo";display:grid;place-items:center;height:100%;color:#777;font:1.1rem var(--hand)}
+  .film-star{position:absolute;right:3%;top:-22px;width:54px;rotate:14deg;filter:drop-shadow(0 3px 3px rgba(0,0,0,.25));animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{50%{scale:1.12;rotate:24deg}}
+
+  .entry{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,4rem);align-items:center;margin-bottom:14vh}
+  .entry.flip .polaroid{order:2}
+  @media (max-width:720px){.entry{grid-template-columns:1fr;margin-bottom:10vh}.entry.flip .polaroid{order:0}}
+  .polaroid{position:relative;background:#fff;padding:.8rem .8rem 0;width:min(100%,330px);margin:0 auto;
+    box-shadow:0 10px 24px rgba(70,70,100,.25);transform:rotate(var(--r));border:1px solid rgba(0,0,0,.04)}
+  .polaroid.reveal{opacity:0;transform:translateY(-80px) rotate(calc(var(--r) + 12deg)) scale(1.08);
+    transition:transform 1s cubic-bezier(.2,1.5,.4,1),opacity .5s}
+  .polaroid.in{opacity:1;transform:rotate(var(--r))}
+  .polaroid:hover{transform:rotate(0) translateY(-6px) scale(1.02);transition:transform .35s}
+  .pic{aspect-ratio:1/1;background:linear-gradient(135deg,#cfe0f7,#fbe7a9);display:grid;place-items:center;overflow:hidden}
+  .pic img{width:100%;height:100%;object-fit:cover;display:block}
+  .pic:empty::after{content:"your photo here";font:600 1.4rem var(--hand);opacity:.55}
+  .polaroid figcaption{font:600 1.5rem var(--hand);text-align:center;padding:.5rem 0 .7rem;min-height:3rem}
+  .tape{position:absolute;top:-14px;left:50%;width:96px;height:28px;background:rgba(244,215,122,.7);
+    transform:translateX(-50%) rotate(-4deg);box-shadow:0 1px 3px rgba(0,0,0,.1);
+    background-image:repeating-linear-gradient(90deg,transparent 0 8px,rgba(255,255,255,.35) 8px 10px)}
+  .flip .tape{transform:translateX(-50%) rotate(5deg);background-color:rgba(160,190,235,.65)}
+  .bow{position:absolute;top:-22px;left:-26px;width:64px;transform:rotate(-18deg);filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
+
+  /* torn-paper note */
+  .note{position:relative;z-index:0;padding:3.4rem 2rem 2.4rem;text-align:center}
+  .note::before,.note::after{content:"";position:absolute;inset:0;z-index:-1;
+    -webkit-mask:radial-gradient(circle 11px at 14px 0,transparent 96%,#000) top left/28px 100% repeat-x;
+    mask:radial-gradient(circle 11px at 14px 0,transparent 96%,#000) top left/28px 100% repeat-x}
+  .note::before{background:radial-gradient(circle at 20% 10%,#f6ecd0,#eedfba 70%,#e6d4a8)}
+  .note::after{z-index:-2;background:rgba(60,45,20,.28);transform:translate(4px,6px);filter:blur(4px)}
+  .note p{font:400 clamp(1.3rem,3vw,1.65rem)/1.38 var(--hand)}
+  .deco svg{position:absolute}
+  .d-bow{top:.7rem;left:1.1rem;width:48px;rotate:-12deg}
+  .d-s1{top:3rem;right:1.2rem;width:22px;rotate:12deg}
+  .d-s2{bottom:1.1rem;right:2.6rem;width:16px;rotate:-10deg}
+  .d-patch{bottom:-18px;left:-20px;width:84px;rotate:-12deg;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18))}
+  .w{display:inline-block;white-space:pre;opacity:0;filter:blur(3px);transform:translateY(5px);
+    transition:opacity .6s,filter .6s,transform .6s;transition-delay:calc(var(--i) * 55ms)}
+  .note.in .w{opacity:1;filter:none;transform:none}
+
+  .closing{text-align:center;padding-bottom:6vh}
+  .closing h2{font:400 clamp(3rem,10vw,6rem)/.95 var(--script);opacity:0;transform:scale(.9);
+    transition:opacity 1.2s,transform 1.4s cubic-bezier(.2,1.4,.4,1)}
+  .closing h2.in{opacity:1;transform:none}
+  .closing p{font-size:1.6rem;margin:1rem 0 2rem;opacity:.85}
+  .btn{padding:.7rem 1.8rem;border-radius:999px;background:var(--blue);color:#fff;font-size:1.4rem;font-weight:600;transition:transform .25s}
+  .btn:hover{transform:translateY(-3px) rotate(-1.5deg)}
+
+  /* friendship page */
+  #reasons{position:fixed;inset:0;z-index:2;overflow-y:auto;overflow-x:hidden;opacity:0;pointer-events:none;transition:opacity 1.2s ease;scroll-behavior:smooth}
+  #reasons.on{opacity:1;pointer-events:auto}
+  .back{position:absolute;top:3vh;left:4vw;font:600 1.5rem var(--hand);opacity:.7;transition:opacity .2s}
+  .back:hover{opacity:1}
+  .r-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2.4rem 1.8rem;margin-bottom:12vh}
+  .sticky{position:relative;min-height:160px;padding:2.2rem 1.4rem 1.6rem;display:grid;place-items:center;text-align:center;
+    font:600 1.6rem/1.25 var(--hand);background:var(--c);rotate:var(--r);opacity:0;
+    box-shadow:0 10px 18px rgba(60,60,90,.2);transition:rotate .3s,translate .3s}
+  .sticky::before{content:"";position:absolute;top:-12px;left:50%;width:72px;height:22px;margin-left:-36px;rotate:-3deg;
+    background:rgba(255,255,255,.6);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .sticky:hover{rotate:0deg;translate:0 -6px}
+  .sticky.in{animation:stickyin .9s cubic-bezier(.2,1.5,.4,1) var(--d,0s) both}
+  @keyframes stickyin{from{opacity:0;transform:translateY(50px) scale(.85)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.sticky{opacity:1;animation:none!important}.closing h2{opacity:1;transform:none}}
+
+  /* cassette = music control */
+  #tape{position:fixed;left:14px;bottom:14px;z-index:30;width:94px;display:none;rotate:-6deg;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.28));transition:rotate .3s,translate .3s}
+  #tape.show{display:block}
+  #tape:hover{rotate:0deg;translate:0 -4px}
+  #tape svg{display:block;width:100%}
+  .reel{transform-box:fill-box;transform-origin:center;animation:spin 2.4s linear infinite;animation-play-state:paused}
+  #tape.playing .reel{animation-play-state:running}
+  @keyframes spin{to{rotate:360deg}}
+
+  .pop-heart{position:fixed;z-index:25;pointer-events:none;width:22px;color:var(--heart);animation:pop 1.1s ease-out forwards}
+  @keyframes pop{to{transform:translate(var(--dx),-120px) rotate(var(--rot)) scale(.6);opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){
+    .item,.polaroid.reveal,.w,.closing h2,.gate-inner>*{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}
+    .bob,.card,.hint,.float,#bunting,.track,.yes,.film-star,.reel{animation:none!important}
+  }
+</style>
+</head>
+<body>
+<div id="flash"></div>
+<audio id="music" loop preload="auto"></audio>
+<svg id="bunting" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+<button id="tape" aria-label="Play or pause the music"><svg viewBox="0 0 120 78">
+  <rect width="120" height="78" rx="7" fill="#54545c"/>
+  <rect x="8" y="8" width="104" height="46" rx="4" fill="#efe6d0"/>
+  <rect x="14" y="13" width="92" height="14" rx="2" fill="#fff" opacity=".85"/>
+  <text x="20" y="24" font-family="Caveat,cursive" font-size="12" font-weight="700" fill="#7a4b4b">a mix for you</text>
+  <rect x="28" y="31" width="64" height="18" rx="9" fill="#2c2c32"/>
+  <g class="reel"><circle cx="42" cy="40" r="6.5" fill="#efe6d0"/><path d="M42 34v12M36 40h12M37.8 35.8l8.4 8.4M46.2 35.8l-8.4 8.4" stroke="#2c2c32" stroke-width="1.6"/></g>
+  <g class="reel"><circle cx="78" cy="40" r="6.5" fill="#efe6d0"/><path d="M78 34v12M72 40h12M73.8 35.8l8.4 8.4M82.2 35.8l-8.4 8.4" stroke="#2c2c32" stroke-width="1.6"/></g>
+  <path d="M22 78l7-20h62l7 20z" fill="#3e3e45"/><circle cx="38" cy="68" r="3" fill="#2c2c32"/><circle cx="82" cy="68" r="3" fill="#2c2c32"/>
+</svg></button>
+
+<div id="ambient" aria-hidden="true"></div>
+
+<!-- GATE -->
+<main id="gate"><div class="gate-inner">
+  <p class="fav">To my favorite person<svg viewBox="0 0 50 50" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8C30 2 44 14 38 38"/><path d="M28 32l10 8 6-11"/></svg></p>
+  <span class="badge" id="gate-name"></span>
+  <h2 class="ask">Do you want a surprise?? 
+                    then answer my question first😆😆
+  </h2>
+  <div><div class="btns"><button class="pill yes" id="yes">YES!!</button><button class="pill no" id="no">NO!!</button></div>
+  <p class="nudge" id="nudge" aria-live="polite"></p></div>
+</div></main>
+
+<!-- LOCK (2nd page: quiz) -->
+<main id="lock"><div class="lock-inner" id="lock-inner"></div></main>
+
+<!-- HOME -->
+<main id="home">
+  <div class="cluster">
+    <div class="item cam" id="camera"><div class="bob"><svg viewBox="0 0 240 160" role="img" aria-label="A little digital camera">
+      <rect x="10" y="30" width="220" height="112" rx="16" fill="#f1e8d2" stroke="#cdbf9f" stroke-width="2"/>
+      <rect x="162" y="20" width="24" height="12" rx="4" fill="#c9bb98"/>
+      <circle cx="206" cy="28" r="9" fill="#d9cdae" stroke="#bfae88" stroke-width="2"/>
+      <rect x="28" y="40" width="36" height="14" rx="3" fill="#fffdf3" stroke="#d6c9a6"/>
+      <rect x="172" y="64" width="48" height="68" rx="10" fill="#e6dbc0"/>
+      <circle cx="100" cy="90" r="50" fill="#cbbd9b"/><circle cx="100" cy="90" r="44" fill="#3b3b46"/>
+      <circle cx="100" cy="90" r="33" fill="#22222a" stroke="#6a6a78" stroke-width="2"/>
+      <circle cx="100" cy="90" r="22" fill="#2d3b66"/>
+      <circle cx="89" cy="78" r="7" fill="#fff" opacity=".55"/><circle cx="113" cy="102" r="3" fill="#fff" opacity=".35"/>
+      <text x="24" y="76" font-family="Georgia,serif" font-weight="bold" font-style="italic" font-size="13" fill="#4a3a3a">balloon</text>
+      <text x="184" y="52" font-family="Arial,sans-serif" font-size="10" font-weight="bold" fill="#8a7d5e">G7X</text>
+    </svg></div></div>
+    <div class="item env"><button class="envelope" id="open" aria-label="Open your birthday card">
+      <span class="env-shadow"></span><span class="env-back"></span>
+      <span class="card"><span>Happy<br>Birthday</span></span>
+      <span class="env-front"></span>
+      <svg class="heart h1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/></svg>
+      <svg class="heart h2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/></svg>
+      <span class="hint">click<svg viewBox="0 0 60 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 30C20 38 44 30 50 8"/><path d="M41 13l9-6 4 11"/></svg></span>
+    </button></div>
+    <div class="item bq"><div class="bob" id="bouquet"></div></div>
+  </div>
+</main>
+
+<!-- BOOK -->
+<div id="book"><div class="inner" id="book-inner"></div></div>
+<div id="reasons"><div class="inner" id="reasons-inner"></div></div>
+
+<script>
+/* ============ EDIT THIS PART ============ */
+const CONFIG = {
+  friend: "ESU",
+  from:   "Shrena",
+  theme:  "purple",                // blue, rose, pink, lavender, purple, sage or butter
+  background: "",                  // optional: "photos/bg.jpg" or a colour like "#fde8ef" (beats the theme)
+  music:  "music.mp3",             // optional: her favourite song next to this file
+  film:   ["photos/film1.jpg","photos/film2.jpg","photos/film3.jpg","photos/film4.jpg","photos/film5.jpg","photos/film6.jpg","photos/film7.jpg","photos/film8.jpg","photos/film9.jpg","photos/film10.jpg","photos/film11.jpg","photos/film12.jpg","photos/film13.jpg"],
+  entries: [                       // add or remove as many as you like
+    { photo:"photos/11.jpeg", caption:"Promise to be with you forever",
+      text:"I know you don't always share everything with me, and that's okay. Whenever you feel like sharing, need someone to listen to you, or simply want someone by your side, just know that I'm always a message away, ready to listen without judgment." },
+    { photo:"photos/film3.jpg", caption:"US ALWAYS",
+      text:"I really miss spending time with you, planning our meetups, finding cute spots to hang out, criticising the food and places, gossiping about everything, taking endless photos, laughing at the most random things, and being our usual dramatic selves. I miss those little moments with you more than you know" },
+    { photo:"photos/44.jpeg", caption:"KEEP SMILING",
+      text:"I am so incredibly proud of you and the person you are becoming. Keep chasing your dreams, keep that beautiful smile on your face, and never forget that we still dream of seeing each other succeed in life. I hope we always hold on to that dream, keep believing in ourselves, and remind each other that no matter how hard life gets, everything will eventually be okay." }
+  ],
+
+  /* ---- 2nd page: the quiz she must pass to open the surprise ----
+     steps: use "quiz", "puzzle", "password" in any order, or [] to skip this page.
+     answer = which option is right, counting from 0 (0 = 1st, 1 = 2nd, 2 = 3rd, 3 = 4th). */
+  lock: {
+    steps: ["quiz"],
+    quiz: [
+      { q:"Where did we first talk?", options:["At school","At class","At playground","You don't remember"], answer:3 },
+      { q:"What do we love to eat together?", options:["Laphing","Momo","Samosa chat in thela","Ice cream"], answer:2 },
+      { q:"Who broke our heart together?", options:["A friend whose name starts with A","A friend whose name starts with T","A friend whose name starts with S","None of the above"], answer:0 }
+    ],
+    title: "Enter the password",   // only used if you add "password" to steps
+    hint: "hint: the day we met (ddmm)",
+    password: "1234",
+    puzzle: "photos/puzzle.jpg"    // only used if you add "puzzle" to steps
+  },
+
+  reasonsIntro: "a few things I never say out loud",
+  reasonsTitle: "why you're my bestest person",
+  reasons: [                       // each one becomes a sticky note; add or remove freely
+    "You have never judged me for who I am or the things I do, and you have always been my biggest cheerleader, supporting me even when I struggle to believe in myself",
+    "You have always stood up for me and explained my side to others when they misunderstood me, and that kind of love and loyalty is something I will forever hold close to my heart. ❤️",
+    "I love seeing how far you have come, from that tall, innocent, and insecure little girl we knew in childhood to the independent, confident woman you are today, living the life you once dreamed of and becoming someone you should be so incredibly proud of 💕💕💕",
+    "I have always admired how daring you are, how you never let fear stop you from being yourself, and somewhere along the way, I became your biggest fan, looking up to you and wishing that one day I could be as beautiful, brave, and fearless as you",
+    "Even when I’m wrong, you never make me feel that way, and if I hate some random person you’ve never even met, you somehow end up hating them more than me 😂🤣❤️. That’s the kind of loyalty I love about you!🤪🤪🤪",
+    "Thank you for making me a better person, listening to all my complaints and problems, and tolerating all my random stuff and dramatic moments 😂❤️. I’m so lucky to have someone who embraces every little part of me and still chooses to stay."
+  ],
+  closingTitle: "Happy birthday, my ESU",
+  closingLine:  "Because you absolutely deserve to be celebrated today."
+};
+/* ========================================= */
+
+const $ = s => document.querySelector(s);
+const HEART = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z"/></svg>';
+const bow = (cls,a,b,c) => `<svg class="${cls}" viewBox="0 0 64 44"><path d="M32 22C14 2 0 10 5 24c5 14 22 6 27-2z" fill="${a}"/><path d="M32 22C50 2 64 10 59 24c-5 14-22 6-27-2z" fill="${b}"/><path d="M32 24l-10 18 8-3 2 5zM32 24l10 18-8-3-2 5z" fill="${c}"/><circle cx="32" cy="22" r="6" fill="${a}"/></svg>`;
+const star = (cls,fill) => `<svg class="${cls}" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z" fill="${fill}"/></svg>`;
+const patch = cls => `<svg class="${cls}" viewBox="0 0 24 24"><defs><pattern id="gp" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#f8e27c"/><rect width="3" height="6" fill="#e8b53a" opacity=".5"/><rect width="6" height="3" fill="#e8b53a" opacity=".5"/></pattern></defs><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.8-6.3 3.8 1.7-7L2 9.2l7.1-.6z" fill="url(#gp)" stroke="#d9a62e" stroke-width=".7" stroke-dasharray="1.4 1.1"/></svg>`;
+
+{ // theme: CONFIG.theme, or add ?theme=pink to the link to preview one
+  const q=(new URLSearchParams(location.search).get("theme")||"").replace(/[^a-z]/g,"");
+  const t=q||CONFIG.theme; if(t && t!=="blue") document.body.classList.add(t);
+  const b=CONFIG.background, s=document.body.style;
+  if(b){ if(/^(#|rgb|hsl)/i.test(b)){ s.backgroundImage="none"; s.backgroundColor=b; }
+    else{ s.backgroundImage=`url("${b}")`; s.backgroundSize="cover"; s.backgroundPosition="center"; s.backgroundAttachment="fixed"; } }
+}
+
+/* ---- bunting ---- */
+(function(){
+  const cols=["#a6d4c0","#f4b58a","#c9b6e4","#f7d98b","#f2a9b8"]; let f="";
+  for(let i=0;i<14;i++){ const t=(i+.5)/14, x=t*1000, y=10+120*t*(1-t);
+    f+=`<polygon points="${x-30},${y-2} ${x+30},${y-2} ${x},${y+64}" fill="${cols[i%5]}" stroke="rgba(0,0,0,.08)"/>`; }
+  $("#bunting").innerHTML=`<path d="M0 10Q500 70 1000 10" fill="none" stroke="#b9ab94" stroke-width="2"/>`+f;
+})();
+
+/* ---- bouquet ---- */
+function daisy(x,y,s,rot){
+  let p=""; for(let i=0;i<14;i++) p+=`<ellipse cx="0" cy="-17" rx="5.5" ry="11" fill="${i%2?"#f6bd3a":"#eea92a"}" transform="rotate(${i*360/14})"/>`;
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})">${p}<circle r="11" fill="#6b4423"/><circle r="5.5" fill="#4d2f17"/></g>`;
+}
+function bouquet(){
+  let breath="", stems="";
+  for(let i=0;i<46;i++){ const a=i*2.399, r=18+((i*37)%62);
+    breath+=`<circle cx="${110+Math.cos(a)*r*1.15}" cy="${88+Math.sin(a)*r*.8}" r="${2.4+(i%3)}" fill="#fff" opacity=".95"/>`; }
+  [[60,100],[160,100],[110,70],[85,60],[140,58]].forEach(([x,y])=>stems+=`<path d="M110 205 Q${(x+110)/2} ${(y+205)/2} ${x} ${y}" stroke="#5a8a4e" stroke-width="3" fill="none"/>`);
+  const blue=[[48,68],[172,66],[128,36],[74,40]].map(([x,y])=>`<g transform="translate(${x} ${y})"><circle r="10" fill="#6f98d8"/><circle r="4" fill="#fff"/></g>`).join("");
+  $("#bouquet").innerHTML = `<svg viewBox="0 0 220 280" role="img" aria-label="A bouquet of daisy">
+    ${breath}${stems}
+    <polygon points="28,108 192,108 110,262" fill="#efe3c4"/><polygon points="52,118 168,118 110,252" fill="#9bbbe8"/>
+    <polygon points="52,118 110,252 86,118" fill="#86a9de" opacity=".7"/>
+    ${blue}${daisy(110,82,1.15,0)}${daisy(62,108,.9,-14)}${daisy(158,108,.9,12)}${daisy(90,50,.62,8)}${daisy(136,52,.62,-6)}
+    <g transform="translate(110 196)"><path d="M0 0C-30-26-52-14-44 2C-36 18-12 12 0 0z" fill="#5b86c9"/><path d="M0 0C30-26 52-14 44 2C36 18 12 12 0 0z" fill="#4f78b8"/>
+    <path d="M0 2l-16 40 12-6 4 9zM0 2l16 40-12-6-4 9z" fill="#4f78b8"/><circle r="8" fill="#6a94d6"/></g></svg>`;
+}
+
+/* ---- the book ---- */
+function buildBook(){
+  const frame = p => `<div class="frame"><img src="${p}" alt="" onerror="this.remove()"></div>`;
+  const frames = CONFIG.film.map(frame).join("");
+  $("#book-inner").innerHTML =
+    `<h1 class="book-title"><small>a little something for</small>${CONFIG.friend}</h1>` +
+    `<div class="film-wrap"><div class="film"><div class="track">${frames}${frames}</div></div>${star("film-star","#f2b632")}</div>` +
+    CONFIG.entries.map((e,i)=>`<section class="entry${i%2?" flip":""}">
+      <figure class="polaroid reveal" style="--r:${i%2?3:-3}deg"><span class="tape"></span>${i%2?bow("bow","#f4d77a","#f2cd5c","#e9bf48"):""}<div class="pic"><img src="${e.photo}" alt="" onerror="this.remove()"></div><figcaption>${e.caption}</figcaption></figure>
+      <div class="note reveal"><span class="deco">${bow("d-bow","#d9534f","#c8453f","#a93226")}${star("d-s1","#f2b632")}${star("d-s2","#f2b632")}${patch("d-patch")}</span><p data-split>${e.text}</p></div></section>`).join("") +
+    `<section class="closing"><button class="btn" id="next">click here if you want something more😆😆🫣 &raquo;</button></section>`;
+  document.querySelectorAll("[data-split]").forEach(el=>{
+    let i=0; el.innerHTML = el.textContent.split(/(\s+)/).map(t=>/\s/.test(t)?t:`<span class="w" style="--i:${i++}">${t}</span>`).join("");
+  });
+  $("#next").onclick = showReasons;
+}
+
+/* ---- page 3: why you're my person ---- */
+function buildReasons(){
+  const cols=["#fff2a8","#ffd3de","#cfeedd","#cfe0f7","#ead7fb"], tilt=[-3,2,-1.5,3,-2.5,1.5];
+  $("#reasons-inner").innerHTML =
+    `<button class="back" id="back">&laquo; back</button>` +
+    `<h1 class="book-title"><small>${CONFIG.reasonsIntro}</small>${CONFIG.reasonsTitle}</h1>` +
+    `<div class="r-grid">${CONFIG.reasons.map((t,i)=>`<div class="sticky pop" style="--c:${cols[i%5]};--r:${tilt[i%6]}deg;--d:${(i%3)*.15}s">${t}</div>`).join("")}</div>` +
+    `<section class="closing"><h2 class="pop">${CONFIG.closingTitle}</h2><p>${CONFIG.closingLine}</p><button class="btn" id="again">Watch again</button></section>`;
+  $("#again").onclick = reset;
+  $("#back").onclick = hideReasons;
+  $("#reasons").addEventListener("click",e=>{ if(e.target.closest("button")) return;
+    $("#book").dispatchEvent(new MouseEvent("click",{clientX:e.clientX,clientY:e.clientY,bubbles:true})); });
+}
+let io2;
+function showReasons(){
+  $("#book").classList.remove("on");
+  setTimeout(()=>{
+    const r=$("#reasons"); r.scrollTop=0; r.classList.add("on");
+    io2=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io2.unobserve(e.target);} }),{root:r,threshold:.25});
+    r.querySelectorAll(".pop").forEach(el=>io2.observe(el));
+  },700);
+}
+function hideReasons(){ $("#reasons").classList.remove("on"); setTimeout(()=>$("#book").classList.add("on"),700); }
+
+/* ---- drifting hearts ---- */
+function ambient(){
+  const box=$("#ambient"), cols=["#e0606f","#f4d77a","#8fb2e6","#fff"];
+  for(let i=0;i<16;i++){
+    const el=document.createElement("span"); el.className="float"; el.innerHTML=HEART;
+    el.style.cssText=`left:${Math.random()*100}%;width:${12+Math.random()*16}px;color:${cols[i%4]};
+      animation-duration:${14+Math.random()*14}s;animation-delay:${-Math.random()*20}s;--dx:${(Math.random()-.5)*160}px`;
+    box.appendChild(el);
+  }
+}
+
+/* ---- gate: YES / NO ---- */
+const music=$("#music"), no=$("#no"), yes=$("#yes");
+const nudges=["Are you sure?","Really?","Pretty please?","Think again.","Last chance!","Okay, you win."];
+let dodges=0, lastDodge=0;
+$("#gate-name").textContent = CONFIG.friend;
+function dodge(){
+  const now=performance.now(); if(now-lastDodge<300) return; lastDodge=now;
+  const r=no.getBoundingClientRect();
+  if(!no.classList.contains("fly")){ no.style.left=r.left+"px"; no.style.top=r.top+"px"; no.classList.add("fly"); void no.offsetWidth; }
+  no.style.left=(12+Math.random()*Math.max(10,innerWidth-r.width-24))+"px";
+  no.style.top=(130+Math.random()*Math.max(10,innerHeight-r.height-220))+"px";
+  $("#nudge").textContent=nudges[Math.min(dodges,nudges.length-1)];
+  dodges++; yes.style.setProperty("--s",1+dodges*.07);
+  if(dodges>=nudges.length){ setTimeout(()=>no.style.display="none",450); }
+}
+no.addEventListener("pointerenter",dodge); no.addEventListener("click",dodge);
+yes.onclick=()=>{
+  $("#gate").classList.add("out"); enterNext();
+  if(CONFIG.music){ music.src=CONFIG.music; music.volume=.6; $("#tape").classList.add("show");
+    music.play().then(()=>$("#tape").classList.add("playing")).catch(()=>{}); }
+};
+$("#tape").onclick=()=>{
+  if(music.paused){ music.play().then(()=>$("#tape").classList.add("playing")).catch(()=>{}); }
+  else{ music.pause(); $("#tape").classList.remove("playing"); }
+};
+
+/* ---- 2nd page: quiz / puzzle / password ---- */
+const LOCK = CONFIG.lock || {steps:[]}, lockBox = $("#lock-inner");
+const PADLOCK = '<svg class="padlock" viewBox="0 0 64 64"><path class="shackle" d="M20 28v-8a12 12 0 0 1 24 0v8" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><rect x="10" y="28" width="44" height="30" rx="8" fill="currentColor"/><circle cx="32" cy="42" r="4.5" fill="#fff"/><rect x="30" y="44" width="4" height="8" rx="2" fill="#fff"/></svg>';
+function enterNext(){
+  if((LOCK.steps||[]).length){ $("#lock").classList.add("show"); runLock(0); }
+  else $("#home").classList.add("show");
+}
+function runLock(i){
+  if(i>=LOCK.steps.length){ $("#lock").classList.add("out"); $("#home").classList.add("show"); return; }
+  ({password:passwordStep, quiz:quizStep, puzzle:puzzleStep})[LOCK.steps[i]](()=>runLock(i+1));
+}
+function passwordStep(done){
+  lockBox.innerHTML = `${PADLOCK}<h2 class="lock-title">${LOCK.title}</h2><p class="lock-hint">${LOCK.hint}</p>
+    <input class="lock-input" id="pw" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Password">
+    <div style="margin-top:1.2rem"><button class="pill" id="pwgo">Unlock</button></div><p class="lock-msg" id="lmsg" aria-live="polite"></p>`;
+  const inp=$("#pw"); let tries=0; inp.focus();
+  const check=()=>{
+    if(inp.value.trim().toLowerCase()===String(LOCK.password).trim().toLowerCase()){
+      $(".padlock").classList.add("open"); $("#lmsg").textContent="Unlocked!"; setTimeout(done,1000);
+    }else{
+      tries++; inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake");
+      $("#lmsg").textContent = tries<3 ? "Hmm, not quite. Try again." : "So close! Read the hint again.";
+    }
+  };
+  $("#pwgo").onclick=check; inp.addEventListener("keydown",e=>{ if(e.key==="Enter") check(); });
+}
+function quizStep(done){
+  let n=0; const Q=LOCK.quiz;
+  const show=()=>{
+    const q=Q[n];
+    lockBox.innerHTML = `<p class="qcount">question ${n+1} of ${Q.length}</p><h2 class="lock-title q">${q.q}</h2>
+      <div class="opts">${q.options.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join("")}</div><p class="lock-msg" id="lmsg" aria-live="polite"></p>`;
+    lockBox.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      if(+b.dataset.i===q.answer){
+        lockBox.querySelectorAll(".opt").forEach(x=>x.disabled=true); b.classList.add("good"); $("#lmsg").textContent="Yes!";
+        setTimeout(()=>{ ++n<Q.length ? show() : done(); },800);
+      }else{ b.classList.remove("bad"); void b.offsetWidth; b.classList.add("bad"); $("#lmsg").textContent="Almost! Try again."; }
+    });
+  };
+  show();
+}
+function puzzleStep(done){
+  const nb=p=>{ const r=p/3|0, c=p%3, o=[]; if(r>0)o.push(p-3); if(r<2)o.push(p+3); if(c>0)o.push(p-1); if(c<2)o.push(p+1); return o; };
+  const order=[0,1,2,3,4,5,6,7,8]; let blank=8, last=-1, solved=false;
+  for(let k=0;k<120;k++){ const c=nb(blank).filter(p=>p!==last), p=c[Math.random()*c.length|0]; [order[blank],order[p]]=[order[p],order[blank]]; last=blank; blank=p; }
+  lockBox.innerHTML = `<h2 class="lock-title q">Put the picture back together</h2><p class="lock-hint">tap a piece next to the empty space</p><div class="puz" id="puz"></div><p class="lock-msg" id="lmsg" aria-live="polite"></p>`;
+  const box=$("#puz"), im=new Image(); im.onload=()=>box.classList.add("img"); im.src=LOCK.puzzle;
+  const draw=()=>{
+    box.classList.toggle("solved",solved);
+    box.innerHTML = order.map((id,pos)=>`<button class="tile${id===8?" blank":""}" data-p="${pos}" style="background-image:url('${LOCK.puzzle}');background-position:${(id%3)*50}% ${(id/3|0)*50}%" aria-label="piece ${id+1}">${id+1}</button>`).join("");
+  };
+  box.onclick=e=>{
+    const t=e.target.closest(".tile"); if(!t||solved) return;
+    const p=+t.dataset.p; if(!nb(blank).includes(p)) return;
+    [order[blank],order[p]]=[order[p],order[blank]]; blank=p;
+    if(order.every((v,i)=>v===i)){ solved=true; $("#lmsg").textContent="You did it!"; setTimeout(done,1600); }
+    draw();
+  };
+  draw();
+}
+
+/* ---- scroll reveals ---- */
+let io;
+function startReveals(){
+  io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} }),
+    {root:$("#book"),threshold:.3});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+}
+
+/* ---- open the card ---- */
+let opened=false;
+function openCard(){
+  if(opened) return; opened=true;
+  $("#home").classList.add("opening");
+  setTimeout(()=>{ $("#flash").classList.add("pop"); $("#camera").classList.add("click"); },950);
+  setTimeout(()=>{ $("#home").classList.add("out"); $("#bunting").classList.add("hide");
+    $("#book").classList.add("on"); $("#ambient").classList.add("on"); $("#book").scrollTop=0; startReveals(); },1550);
+}
+function reset(){
+  $("#book").classList.remove("on"); $("#reasons").classList.remove("on"); $("#ambient").classList.remove("on"); $("#book").scrollTo({top:0,behavior:"auto"});
+  setTimeout(()=>{
+    document.querySelectorAll(".in").forEach(el=>el.classList.remove("in"));
+    $("#home").classList.remove("opening","out"); $("#flash").classList.remove("pop"); $("#camera").classList.remove("click");
+    $("#bunting").classList.remove("hide"); opened=false;
+  },900);
+}
+$("#open").onclick=openCard;
+
+/* ---- tiny hearts where you tap ---- */
+$("#book").addEventListener("click",e=>{
+  if(e.target.closest("button")) return;
+  for(let i=0;i<6;i++){
+    const h=document.createElement("span"); h.className="pop-heart"; h.innerHTML=HEART;
+    h.style.cssText=`left:${e.clientX-11}px;top:${e.clientY-11}px;--dx:${(Math.random()-.5)*120}px;--rot:${(Math.random()-.5)*60}deg`;
+    document.body.appendChild(h); h.addEventListener("animationend",()=>h.remove());
+  }
+});
+
+bouquet(); buildBook(); buildReasons(); ambient();
+</script>
+</body>
+</html>
